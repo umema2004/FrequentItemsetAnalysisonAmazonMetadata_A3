@@ -13,13 +13,13 @@ The dataset is preprocessed to extract relevant fields such as ASIN, title, feat
 The producer application reads the preprocessed data and streams it in real-time. It publishes the data to a messaging system using Apache Kafka for consumption by the consumer applications.
 
 ## 4-Consumer
-##Consumer 1 - Apriori Algorithm
+-Consumer 1 - Apriori Algorithm
 Consumer 1 implements the Apriori algorithm for frequent itemset mining. It processes the incoming data stream and identifies frequent itemsets and association rules in real-time. The results are printed to the console, providing insights into product associations.
 
-##Consumer 2 - PCY Algorithm
+-Consumer 2 - PCY Algorithm
 Consumer 2 implements the PCY (Park-Chen-Yu) algorithm for frequent itemset mining. Similar to Consumer 1, it processes the streaming data and identifies frequent itemsets and association rules using the PCY algorithm. Real-time insights and associations are printed to the console.
 
-##Consumer 3 - Recommendation System
+-Consumer 3 - Recommendation System
 Consumer 3 is dedicated to building a recommendation system based on consumer preferences. It analyzes the streaming data to understand consumer behavior and preferences. Recommendations are generated dynamically, considering factors such as product popularity, consumer interactions, and price adjustments. Additionally, bundled product suggestions are provided to enhance the shopping experience.
 
 ## 5-MongoDB Integration
