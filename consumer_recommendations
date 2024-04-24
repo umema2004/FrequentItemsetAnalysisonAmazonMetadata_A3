@@ -1,0 +1,72 @@
+import pyfpgrowth
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import linear_kernel
+from collections import defaultdict
+from itertools import combinations
+from sklearn.metrics.pairwise import cosine_similarity
+from kafka import KafkaConsumer
+import json
+import json
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import linear_kernel
+
+bootstrap_servers = ['localhost:9092']
+topic = 'pp-topic'
+
+products_list = []
+
+consumer = KafkaConsumer(topic,
+                         bootstrap_servers=bootstrap_servers,
+                         value_deserializer=lambda x: json.loads(x.decode('utf-8')))
+
+# Data storage for item features
+item_features = {}
+transactions=[]
+# Function to preprocess item features
+def preprocess_features(data):
+    category_str = ' '.join(data['category'])
+    features = category_str + ' ' + data['brand'] + ' ' + data['title']
+    return features
+
+# Function to update item features
+def update_item_features(data):
+    item_id = data['asin']
+    features = preprocess_features(data)
+    item_features[item_id] = features
+
+# Function to calculate cosine similarity between items
+def calculate_similarity(item_id, threshold=0.2):
+    tfidf = TfidfVectorizer().fit_transform(item_features.values())
+    cosine_similarities = linear_kernel(tfidf[item_id], tfidf)
+    similar_indices = cosine_similarities.flatten().argsort()[:-10:-1]
+    similar_items = [(list(item_features.keys())[i], cosine_similarities[0][i]) for i in similar_indices if cosine_similarities[0][i] > threshold]
+    return similar_items
+
+def transactions_from_similarity(similar_items, threshold=0.2):
+    transactions = []
+    for item, similarity in similar_items:
+        if similarity >= 0.1:
+            transactions.append([item])
+    return transactions
+
+
+for message in consumer:
+    product_info = message.value
+    products_list.append(product_info)
+
+    if len(products_list) == 5:
+        for data in products_list:
+            update_item_features(data)
+            similar_items = calculate_similarity(item_id=0)
+            transactions = transactions_from_similarity(similar_items)
+            patterns = pyfpgrowth.find_frequent_patterns(transactions, 2)
+
+
+  #          print("Frequent Itemsets:")
+ #           for itemset, support in patterns.items():
+#                print(f"{itemset}: {support}")
+            print(f"Recommendations for {data['title']}:")
+            for rec_id, score in similar_items:
+                print(f"- {rec_id} (Similarity Score: {score})")
+
+        products_list = []  # Clear the list after printing
