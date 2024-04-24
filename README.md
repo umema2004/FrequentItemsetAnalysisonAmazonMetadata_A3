@@ -28,7 +28,7 @@ Each consumer application is modified to connect to a MongoDB database for stori
 ## 6-Dependencies
 Python 3.x
 MongoDB
-Kafka or RabbitMQ (for messaging)
+Apache Kafka
 Required Python libraries (e.g., pymongo, kafka-python, etc.)
 
 ## 7-Contributors
