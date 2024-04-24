@@ -1,6 +1,4 @@
-# FrequentItemsetAnalysisonAmazonMetadata_A3
-
-##Overview
+# FrequentItemsetAnalysisonAmazonMetadata_A3 
 This project implements a streaming pipeline to process product data from the Amazon metadata dataset. The pipeline includes preprocessing of the data, a producer application to stream the preprocessed data in real-time, three consumer applications for frequent itemset mining using Apriori and PCY algorithms, and a recommendation system based on consumer preferences. MongoDB is utilized to store the results of each consumer's output.
 
 ## 1-Sampling
